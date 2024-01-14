@@ -20,7 +20,7 @@
     <script>
       // Отримання відеопотоку з камери
       navigator.mediaDevices
-        .getUserMedia({ video: true })
+        .getUserMedia({ video: { facingMode: { exact: "environment" } } })
         .then(function (stream) {
           var video = document.getElementById("scanner");
           video.srcObject = stream;
