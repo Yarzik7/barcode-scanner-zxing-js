@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <script
+      src="https://cdn.jsdelivr.net/npm/@zxing/library@0.24.0"
+      type="module"
+    ></script>
+  </head>
+  <body style="padding: 10px 20px">
+    <input
+      type="text"
+      id="barcodeInput"
+      placeholder="Сканований штрихкод"
+      style="margin-bottom: 15px"
+    />
+    <video id="scanner" width="100%" height="200"></video>
+
+    <script>
+      // Отримання відеопотоку з камери
+      navigator.mediaDevices
+        .getUserMedia({ video: true })
+        .then(function (stream) {
+          var video = document.getElementById("scanner");
+          video.srcObject = stream;
+          video.play();
+
+          // Створення розпізнавача
+          var codeReader = new ZXing.BrowserQRCodeReader();
+
+          // Початок розпізнавання
+          codeReader.decodeFromVideoDevice(
+            undefined,
+            "scanner",
+            (result, err) => {
+              if (result) {
+                var barcodeInput = document.getElementById("barcodeInput");
+                barcodeInput.value = result.text;
+              }
+              if (err && !(err instanceof ZXing.NotFoundException)) {
+                console.error("Помилка розпізнавання штрихкоду: ", err);
+              }
+            }
+          );
+        })
+        .catch(function (err) {
+          console.error("Помилка отримання доступу до камери: ", err);
+        });
+    </script>
+  </body>
+</html>
